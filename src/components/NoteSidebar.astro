@@ -13,7 +13,7 @@ const categories = allCategories.reduce((acc, category) => {
 }, {});
 ---
 
-<aside id="note-sidebar" class="sidebar w-72 h-screen fixed left-0 top-0 border-r border-cyber-green/20 bg-hacker-bg/95 backdrop-blur overflow-y-auto">
+<aside id="note-sidebar" class="sidebar h-screen fixed left-0 top-0 border-r border-cyber-green/20 bg-hacker-bg/95 backdrop-blur overflow-y-auto">
   <div class="p-4">
     <a href="/notes" class="block p-2 mb-4 text-cyber-green hover:bg-cyber-green/10 rounded transition-colors">
       <div class="font-mono text-lg">~/notes</div>
@@ -100,7 +100,7 @@ const categories = allCategories.reduce((acc, category) => {
   }
 
   /* Sidebar expanded state */
-  .expanded {
+  .sidebar.expanded {
     width: 340px; /* Expanded width */
   }
 
