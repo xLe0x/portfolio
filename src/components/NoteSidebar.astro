@@ -90,7 +90,7 @@ const categories = allCategories.reduce((acc, category) => {
 <style is:global>
   /* Sidebar initial state (minimized) */
   .sidebar {
-    width: 120px; /* Minimized width */
+    width: 60px; /* Minimized width */
     transition: width 0.3s ease; /* Smooth transition for width */
     overflow: hidden; /* Hide overflow to prevent horizontal scrollbar */
     position: fixed; /* Keep the sidebar fixed in position */
@@ -100,7 +100,7 @@ const categories = allCategories.reduce((acc, category) => {
   }
 
   /* Sidebar expanded state */
-  .sidebar.expanded {
+  .expanded {
     width: 340px; /* Expanded width */
   }
 
