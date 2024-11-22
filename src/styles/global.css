@@ -1,0 +1,92 @@
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&family=Ubuntu+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+/* Global styles or in a custom stylesheet (e.g., styles.css) */
+::-webkit-scrollbar {
+  width: 12px;  /* Adjust the width of the scrollbar */
+}
+
+::-webkit-scrollbar-track {
+  background: #1a1a1a;  /* cyber-black */
+}
+
+::-webkit-scrollbar-thumb {
+  background: #333;  /* cyber-green */
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #00ff33;  /* cyber-blue */
+}
+
+.prose {
+  --tw-prose-headings: #00ff55;
+  --tw-prose-links: #003399;
+  line-height: 1.75;
+}
+
+.prose img {
+  border-radius: 8px;
+  max-width: 100%;
+}
+
+.prose pre {
+  background-color: #1a1a1a;
+  border: 2px solid #00ff55;
+  padding: 1rem;
+  border-radius: 8px;
+  text-align: start;
+}
+
+.prose code {
+  color: #00aaff;
+  border-radius: 4px;
+}
+
+  img {
+  border-radius: 4px;
+  }
+
+
+  :root {
+    font-family: "Space Grotesk", sans-serif;
+    }
+
+  code {
+    font-family: "Ubuntu Mono", monospace;
+  }
+
+  /* Mobile menu styling */
+  #mobile-menu a {
+    font-size: 1.25rem;
+  }
+
+  #hamburger-icon {
+    display: block;
+    cursor: pointer;
+  }
+
+  #hamburger-icon span {
+    transition: all 0.3s ease;
+  }
+
+  #hamburger-icon.open span:nth-child(1) {
+    transform: rotate(45deg) translate(5px, 5px);
+  }
+
+  #hamburger-icon.open span:nth-child(2) {
+    opacity: 0;
+  }
+
+  #hamburger-icon.open span:nth-child(3) {
+    transform: rotate(-45deg) translate(5px, -5px);
+  }
+
+  body {
+  background: linear-gradient(135deg, #091009 30%, #051005 100%);
+}
+

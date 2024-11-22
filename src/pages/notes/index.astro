@@ -1,0 +1,37 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import NoteSidebar from '../../components/NoteSidebar.astro';
+
+const categories = await Astro.glob('./categories/*.mdx');
+---
+
+<Layout title="Security Notes">
+  <div class="flex min-h-screen">
+    <NoteSidebar />
+    <div class="flex-1 pl-72">
+      <div class="max-w-3xl mx-auto p-8">
+        <h1 class="text-3xl font-bold mb-8">Security Notes</h1>
+        
+        <div class="grid grid-cols-1 gap-6">
+          {categories.map(category => (
+            <a 
+              href={category.url}
+              class="block p-6 border border-cyber-green/20 rounded-lg hover:border-cyber-green/50 transition-colors"
+            >
+              <h2 class="text-xl font-bold mb-2">{category.frontmatter.title}</h2>
+              <p class="text-cyber-blue mb-4">
+                {category.frontmatter.description || `Explore ${category.frontmatter.title} concepts, techniques, and best practices.`}
+              </p>
+              <div class="flex items-center text-cyber-green">
+                <span>Browse section</span>
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                </svg>
+              </div>
+            </a>
+          ))}
+        </div>
+      </div>
+    </div>
+  </div>
+</Layout>

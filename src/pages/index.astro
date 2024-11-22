@@ -1,0 +1,113 @@
+---
+import Layout from '../layouts/Layout.astro';
+import SocialLinks from '../components/SocialLinks.astro';
+---
+
+<Layout title="whois xLe0x">
+  <div class="space-y-12">
+    <!-- Hero Section -->
+    <section class="relative">
+      <div class="absolute inset-0 bg-gradient-to-b from-cyber-green/10 to-transparent -z-10"></div>
+      
+      <div class="max-w-3xl mx-auto text-center py-12">
+        <div class="inline-block p-2 rounded-full bg-cyber-black mb-8">
+          <div class="bg-cyber-black rounded-full p-4">
+            <p class="text-xl text-cyber-green">whoami > xLe0x</code>
+          </div>
+        </div>
+
+        <h1 class="text-4xl font-extrabold mb-4">
+          <span class="text-cyber-green">Ammar Mohamed Saber</span>
+        </h1>
+        
+        <p class="text-lg text-gray-300 leading-relaxed">
+          A passionate Junior Pentester and Computer Science student with a strong drive to innovate and secure the digital world. I thrive in dynamic environments where I can apply my technical skills to solve real-world cybersecurity challenges. Always eager to learn, I’m constantly evolving through hands-on experience, solving CTFs, and exploring cutting-edge technologies. Let’s connect and collaborate on making the internet a safer place!
+        </p>
+
+        <div class="mt-8 flex justify-center">
+          <SocialLinks />
+        </div>
+      </div>
+    </section>
+
+    
+    <!-- My Focus -->
+    <section class="space-y-8">
+      <div class="border border-cyber-green/20 p-8 rounded-lg backdrop-blur-sm transition-all duration-300 ease-in-out hover:bg-cyber-green/5">
+        <h2 class="text-2xl font-bold text-cyber-blue mb-6">🏅 The Mission</h2>
+        <p class="text-gray-300 leading-relaxed">
+          My mission is simple yet profound: to empower and protect the digital world. I am dedicated to uncovering vulnerabilities, mastering the tools of the trade, and continuously evolving my skills in cybersecurity. Whether it's through ethical hacking, solving CTF challenges, or collaborating with others to share knowledge, I strive to leave a lasting impact on the community and make the internet a safer place for everyone. My journey is driven by curiosity, persistence, and a relentless pursuit of improvement.
+        </p>
+      </div>
+    </section>
+
+    <!-- Arsenal Section -->
+    <section class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div class="border border-cyber-green/20 p-6 rounded-lg transition-all hover:bg-cyber-green/5">
+        <h3 class="text-2xl font-bold text-cyber-blue mb-4">💻 My Arsenal</h3>
+        <ul class="space-y-4 text-gray-300">
+          <li class="flex items-start gap-2">
+            <span class="text-cyber-green text-lg">⚡</span>
+            Python, JavaScript, Bash and a touch of Powershell.
+          </li>
+          <li class="flex items-start gap-2">
+            <span class="text-cyber-green text-lg">⚡</span>
+            Networking Enumeration and Pentesting
+          </li>
+          <li class="flex items-start gap-2">
+            <span class="text-cyber-green text-lg">⚡</span>
+            Active Directory Hacking & Privilege Escalation
+          </li>
+          <li class="flex items-start gap-2">
+            <span class="text-cyber-green text-lg">⚡</span>
+            CTF Problem Solving & Knowledge Sharing
+          </li>
+          <li class="flex items-start gap-2">
+            <span class="text-cyber-green text-lg">⚡</span>
+            Web Application Security and Vulnerability Exploitation
+          </li>
+          <li class="flex items-start gap-2">
+            <span class="text-cyber-green text-lg">⚡</span>
+            Bug Bounty Hunting and Reporting Security Flaws
+          </li>
+        </ul>
+      </div>
+
+      <div class="border border-cyber-green/20 p-6 rounded-lg transition-all duration-300 ease-in-out hover:bg-cyber-green/5">
+        <h3 class="text-2xl font-bold text-cyber-blue mb-4">🚀 What Drives Me</h3>
+        <p class="text-lg text-gray-300 leading-relaxed mb-6">
+          I’m driven by the mission to make the digital world safer, one bug at a time. Breaking barriers, thinking like an attacker, and crafting innovative solutions define my approach. It’s not just a profession—it’s a purpose.
+        </p>
+        <p class="text-lg text-gray-300 leading-relaxed">
+          Whether it's diving into Active Directory, exploring new pentesting tools, or decoding a cryptic challenge, my goal is to keep learning, growing, and giving back to the cybersecurity ecosystem.
+        </p>
+      </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section class="border border-cyber-green/20 p-8 rounded-lg text-center transition-all duration-300 ease-in-out hover:bg-cyber-green/5">
+      <h2 class="text-2xl font-bold text-cyber-blue mb-4">🤝 Let’s Collaborate</h2>
+      <p class="text-gray-300 mb-6 px-24">
+        Have a project, challenge, or just want to exchange ideas?  
+        Let’s connect and hack the future together.
+      </p>
+      <div class="flex items-center justify-center gap-8">
+        <a
+          href="/contact"
+          class="inline-block bg-cyber-green/10 text-cyber-green px-6 py-3 rounded-lg border border-cyber-green/20 hover:bg-cyber-green/20 transition-colors"
+        >
+          Reach Out
+        </a>
+        <a
+          class="inline-block text-cyber-green px-6 py-3 rounded-lg border border-cyber-green/20 hover:bg-cyber-green/20 transition-colors"
+          href="xle0x_cv.pdf"
+          download="xle0x_cv.pdf"
+        >
+          My Resume
+        </a>
+      </div>
+    </section>
+    
+  </div>
+</Layout>
+

@@ -1,0 +1,61 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout title="About Me">
+  <div class="max-w-2xl mx-auto space-y-8">
+    <h1 class="text-3xl font-bold">About Me</h1>
+    
+    <div class="space-y-6">
+      <p>
+        I'm a passionate cybersecurity professional specializing in ethical hacking and penetration testing. 
+        With a strong foundation in offensive security, I help organizations identify and remediate vulnerabilities 
+        before they can be exploited by malicious actors.
+      </p>
+
+      <div class="p-6 border border-hacker-green/20 rounded-lg">
+        <h2 class="text-xl font-bold mb-4">Areas of Expertise</h2>
+        <ul class="list-disc list-inside space-y-2">
+          <li>Web Application Security</li>
+          <li>Network Penetration Testing</li>
+          <li>Mobile Application Security</li>
+          <li>Cloud Security Assessment</li>
+          <li>Security Research & Development</li>
+        </ul>
+      </div>
+
+      <div class="p-6 border border-hacker-green/20 rounded-lg">
+        <h2 class="text-xl font-bold mb-4">Certifications</h2>
+        <ul class="list-disc list-inside space-y-2">
+          <li>Offensive Security Certified Professional (OSCP)</li>
+          <li>Certified Ethical Hacker (CEH)</li>
+          <li>CompTIA Security+</li>
+        </ul>
+      </div>
+
+      <div class="p-6 border border-hacker-green/20 rounded-lg">
+        <h2 class="text-xl font-bold mb-4">Tools & Technologies</h2>
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <h3 class="font-bold mb-2">Penetration Testing</h3>
+            <ul class="list-disc list-inside">
+              <li>Burp Suite</li>
+              <li>Metasploit</li>
+              <li>Nmap</li>
+              <li>Wireshark</li>
+            </ul>
+          </div>
+          <div>
+            <h3 class="font-bold mb-2">Development</h3>
+            <ul class="list-disc list-inside">
+              <li>Python</li>
+              <li>Bash</li>
+              <li>JavaScript</li>
+              <li>Go</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</Layout>

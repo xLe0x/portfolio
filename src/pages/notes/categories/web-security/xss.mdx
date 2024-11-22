@@ -1,0 +1,79 @@
+---
+layout: ../../../../layouts/NoteLayout.astro
+title: Cross-Site Scripting (XSS) Deep Dive
+category: Web Security
+subcategory: Client-Side Attacks
+date: 2024-11-20
+---
+
+## Types of XSS
+
+### Reflected XSS
+Reflected XSS occurs when malicious scripts are reflected off a web server, such as in search results or error messages.
+
+```javascript
+// Example vulnerable code
+app.get('/search', (req, res) => {
+  res.send(`Search results for: ${req.query.q}`);
+});
+
+// Attack payload
+http://example.com/search?q=<script>alert('XSS')</script>
+```
+
+### Stored XSS
+Stored XSS occurs when malicious scripts are saved on the target servers.
+
+```javascript
+// Vulnerable comment system
+app.post('/comments', (req, res) => {
+  comments.push(req.body.comment); // Stored without sanitization
+});
+```
+
+### DOM-based XSS
+DOM-based XSS occurs when JavaScript modifies the DOM in an unsafe way.
+
+```javascript
+// Vulnerable code
+const name = new URLSearchParams(window.location.search).get('name');
+document.getElementById('greeting').innerHTML = 'Hello, ' + name;
+```
+
+## Prevention Techniques
+
+### Content Security Policy (CSP)
+```html
+<meta http-equiv="Content-Security-Policy" 
+  content="default-src 'self'; script-src 'self' 'nonce-random123';">
+```
+
+### Output Encoding
+```javascript
+function encodeHTML(str) {
+  return str.replace(/[&<>"']/g, function(match) {
+    const escape = {
+      '&': '&amp;',
+      '<': '&lt;',
+      '>': '&gt;',
+      '"': '&quot;',
+      "'": '&#39;'
+    };
+    return escape[match];
+  });
+}
+```
+
+### Input Validation
+```javascript
+const validator = require('validator');
+
+app.post('/comment', (req, res) => {
+  if (!validator.isLength(req.body.comment, { min: 1, max: 500 })) {
+    return res.status(400).json({ error: 'Invalid comment length' });
+  }
+  
+  const sanitizedComment = validator.escape(req.body.comment);
+  // Store sanitizedComment
+});
+```

@@ -1,0 +1,150 @@
+---
+const allCategories = await Astro.glob('../pages/notes/categories/*.mdx');
+const allNotes = await Astro.glob('../pages/notes/categories/**/*.mdx');
+
+// Organize notes by category
+const categories = allCategories.reduce((acc, category) => {
+  const categoryName = category.frontmatter.title;
+  acc[categoryName] = allNotes.filter(note => 
+    note.frontmatter.category === categoryName && 
+    note.url !== category.url // Exclude category overview page
+  );
+  return acc;
+}, {});
+---
+
+<aside id="note-sidebar" class="sidebar w-72 h-screen fixed left-0 top-0 border-r border-cyber-green/20 bg-hacker-bg/95 backdrop-blur overflow-y-auto">
+  <div class="p-4">
+    <a href="/notes" class="block p-2 mb-4 text-cyber-green hover:bg-cyber-green/10 rounded transition-colors">
+      <div class="font-mono text-lg">~/notes</div>
+    </a>
+
+    <div class="space-y-2">
+      {Object.entries(categories).map(([category, notes]) => (
+        <div class="space-y-1" key={category}>
+          <a 
+            href="javascript:void(0);" 
+            class="flex items-center justify-between p-2 text-cyber-blue hover:text-cyber-green hover:bg-cyber-green/10 rounded transition-colors"
+            onclick={`toggleCategory(event, '${category}')`}  <!-- Correct dynamic injection of category -->
+          >
+            <span>{category}</span>
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+            </svg>
+          </a>
+          <div class="ml-4 space-y-1 category-notes" id={`category-${category}`} style="display: none;">
+            {notes.map(note => (
+              <a 
+                href={note.url}
+                class="block p-2 text-sm text-cyber-blue hover:text-cyber-green hover:bg-cyber-green/10 rounded transition-colors"
+                key={note.url}
+              >
+                {note.frontmatter.title}
+              </a>
+            ))}
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+</aside>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    // Get the sidebar element
+    const sidebar = document.getElementById('note-sidebar');
+
+    // Function to expand the sidebar
+    function expandSidebar() {
+      sidebar.classList.add('expanded');
+    }
+
+    // Function to minimize the sidebar
+    function minimizeSidebar() {
+      sidebar.classList.remove('expanded');
+    }
+
+    // Add mouseenter and mouseleave event listeners to control sidebar expansion
+    sidebar.addEventListener('mouseenter', expandSidebar);
+    sidebar.addEventListener('mouseleave', minimizeSidebar);
+
+    // Toggle function for categories
+    window.toggleCategory = function(event, category) {
+      const notes = document.getElementById(`category-${category}`);
+      
+      // Check if the element exists before trying to change its style
+      if (notes) {
+        // Toggle visibility of the category notes
+        if (notes.style.display === "none" || notes.style.display === "") {
+          notes.style.display = "block";
+        } else {
+          notes.style.display = "none";
+        }
+      } else {
+        console.error(`Element with ID "category-${category}" not found.`);
+      }
+    }
+  });
+</script>
+
+<style is:global>
+  /* Sidebar initial state (minimized) */
+  .sidebar {
+    width: 60px; /* Minimized width */
+    transition: width 0.3s ease; /* Smooth transition for width */
+    overflow: hidden; /* Hide overflow to prevent horizontal scrollbar */
+    position: fixed; /* Keep the sidebar fixed in position */
+    top: 0;
+    left: 0;
+    height: 100vh;
+  }
+
+  /* Sidebar expanded state */
+  .sidebar.expanded {
+    width: 300px; /* Expanded width */
+  }
+
+  /* Text and content inside the sidebar to be full width */
+  .sidebar .space-y-2 {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 100%;
+  }
+
+  /* Make the links inside the sidebar full width and adjust appearance */
+  .sidebar .space-y-2 a {
+    display: flex; /* Make the links flex containers */
+    width: 100%; /* Full width for each link */
+    padding: 0.5rem;
+    font-size: 1rem;
+    text-overflow: ellipsis; /* In case of long text, show ellipsis */
+    overflow: hidden;
+    white-space: nowrap; /* Prevent text from wrapping in minimized state */
+    transition: background-color 0.2s ease, padding 0.2s ease;
+    align-items: center; /* Vertically align text and icon */
+    justify-content: space-between; /* Space out text and icon */
+  }
+
+  /* Sidebar expanded: full content, no ellipsis */
+  .sidebar.expanded .space-y-2 a {
+    white-space: normal; /* Allow text to wrap */
+    padding-left: 1rem; /* Slight padding when expanded */
+  }
+
+  /* Optional: Adjust font size or padding to make it look more compact when minimized */
+  .sidebar .space-y-1 a {
+    font-size: 0.85rem; /* Smaller font in minimized state */
+  }
+
+  /* No horizontal scrolling on the body */
+  body, html {
+    overflow-x: hidden; /* Prevent horizontal scrolling */
+  }
+
+  /* Ensuring the SVG icon and text align properly */
+  .sidebar .space-y-2 a svg {
+    margin-left: 8px; /* Add margin to space out icon */
+    vertical-align: middle; /* Align the icon vertically in the center with the text */
+  }
+</style>

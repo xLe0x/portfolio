@@ -1,0 +1,150 @@
+---
+import Layout from './Layout.astro';
+import NoteSidebar from '../components/NoteSidebar.astro';
+
+interface Props {
+  title: string;
+  frontmatter: {
+    title: string;
+    category: string;
+    date: string;
+  };
+}
+
+const { frontmatter, title } = Astro.props;
+const allNotes = await Astro.glob('../pages/notes/categories/**/*.mdx');
+
+// Find current note index
+const currentIndex = allNotes.findIndex(note => 
+  note.frontmatter.title === frontmatter.title
+);
+
+const prevNote = currentIndex > 0 ? allNotes[currentIndex - 1] : null;
+const nextNote = currentIndex < allNotes.length - 1 ? allNotes[currentIndex + 1] : null;
+---
+
+<Layout title={frontmatter.title || title}>
+  <div class="flex min-h-screen flex-col md:flex-row">
+    <NoteSidebar class="w-full md:w-72" />
+    <article class="flex-1 p-4 md:p-8">
+      <div class="max-w-6xl mx-auto">
+        <div class="mb-8">
+          <div class="text-sm text-cyber-green/60 mb-2">
+            {frontmatter.category}
+          </div>
+          <h1 class="text-3xl md:text-5xl font-bold mb-2">{frontmatter.title}</h1>
+          <time class="text-sm text-cyber-blue/60">{frontmatter.date}</time>
+        </div>
+
+        <div class="prose prose-invert prose-headings:text-cyber-green prose-a:text-cyber-green max-w-none">
+          <slot />
+        </div>
+
+        <!-- Navigation -->
+        <div class="mt-12 pt-6 border-t border-cyber-green/20 flex flex-col md:flex-row justify-between items-center">
+          {prevNote && (
+            <a href={prevNote.url} class="flex items-center gap-2 text-cyber-blue hover:text-cyber-green transition-colors">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+              </svg>
+              <span>{prevNote.frontmatter.title}</span>
+            </a>
+          )}
+          {nextNote && (
+            <a href={nextNote.url} class="flex items-center gap-2 text-cyber-blue hover:text-cyber-green transition-colors mt-4 md:mt-0 md:ml-auto">
+              <span>{nextNote.frontmatter.title}</span>
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+              </svg>
+            </a>
+          )}
+        </div>
+      </div>
+    </article>
+  </div>
+</Layout>
+
+<style is:global>
+  /* Main content should have proper spacing */
+  .flex-1 {
+    padding-left: calc(2rem + 16px); /* Adjust padding to avoid right-shift */
+  }
+
+  .prose {
+    max-width: 100%;
+    margin: 0 auto; /* Ensures text doesn't stretch too wide */
+  }
+
+  /* Centering the content properly */
+  .max-w-4xl {
+    max-width: 64rem; /* Limits the max width of content */
+  }
+
+  /* Style for code blocks and pre */
+  .prose pre {
+    background-color: #0d1a0d !important;
+    border: 1px solid rgba(0, 255, 85, 0.2);
+    overflow-x: auto; /* Allows horizontal scrolling */
+    padding: 1rem; /* Adds padding for readability */
+    white-space: pre-wrap; /* Prevents long lines from overflowing */
+  }
+  
+  .prose code {
+    color: #00ff55 !important;
+  }
+  
+  .prose ul {
+    list-style-type: disc;
+    padding-left: 1.5em;
+  }
+  
+  .prose p {
+    margin-bottom: 1.5em;
+  }
+
+  .prose h2 {
+    margin-top: 2em;
+    margin-bottom: 1em;
+    padding-bottom: 0.5em;
+    border-bottom: 1px solid rgba(0, 255, 85, 0.2);
+  }
+
+  .prose h3 {
+    margin-top: 1.5em;
+    margin-bottom: 1em;
+  }
+
+  /* Responsive Adjustments */
+  @media (max-width: 768px) {
+    .max-w-6xl {
+      max-width: 100%; /* Ensure content takes full width on smaller screens */
+    }
+
+    .text-3xl {
+      font-size: 2rem; /* Smaller text for better readability on small screens */
+    }
+
+    .text-5xl {
+      font-size: 3rem; /* Adjust title size */
+    }
+
+    .prose p {
+      font-size: 1rem; /* Adjust paragraph font size */
+      line-height: 1.6; /* Improve line height for readability */
+    }
+
+    .prose ul {
+      padding-left: 1rem; /* Reduce padding for smaller screens */
+    }
+
+    .prose code {
+      font-size: 0.875rem; /* Adjust code font size */
+    }
+
+    .prose pre {
+      font-size: 0.875rem; /* Make pre block text smaller for small screens */
+      overflow-x: auto;
+      white-space: pre-wrap;
+    }
+  }
+</style>

